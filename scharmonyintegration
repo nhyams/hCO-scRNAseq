@@ -1,1 +1,267 @@
+library(Seurat)
+library(ggplot2)
+library(tidyverse)
+library(patchwork)
+library(gridExtra)
+library(harmony)
+library(loupeR)
+library(sctransform)
+library(RPresto)
+library(presto)
+
+## Acquire relevant datasets (L1-L4, creating seurat objects for each)
+
+L1.data <- Read10X(data.dir = "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/L1/")
+# Initialize the Seurat object with the raw (non-normalized data).
+L1 <- CreateSeuratObject(counts = L1.data, 
+                         project = "L1", 
+                         min.cells = 3, 
+                         min.features = 200)
+
+# Save seurat file into a specific folder for each library
+L1.file.path <- "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/L1/Seurat Object/L1_seurat.rds"
+saveRDS(L1, file = L1.file.path)
+
+L2.data <- Read10X(data.dir = "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/L2/")
+# Initialize the Seurat object with the raw (non-normalized data).
+L2 <- CreateSeuratObject(counts = L2.data, 
+                         project = "L2", 
+                         min.cells = 3, 
+                         min.features = 200)
+
+# Save seurat file into a specific folder for each library
+L2.file.path <- "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/L2/Seurat Object/L2_seurat.rds"
+saveRDS(L2, file = L2.file.path)
+
+L3.data <- Read10X(data.dir = "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/L3/")
+# Initialize the Seurat object with the raw (non-normalized data).
+L3 <- CreateSeuratObject(counts = L3.data, 
+                         project = "L3", 
+                         min.cells = 3, 
+                         min.features = 200)
+
+# Save seurat file into a specific folder for each library
+L3.file.path <- "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/L3/Seurat Object/L3_seurat.rds"
+saveRDS(L3, file = L2.file.path)
+
+L4.data <- Read10X(data.dir = "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/L4/")
+# Initialize the Seurat object with the raw (non-normalized data).
+L4 <- CreateSeuratObject(counts = L4.data, 
+                         project = "L4", 
+                         min.cells = 3, 
+                         min.features = 200)
+
+# Save seurat file into a specific folder for each library
+L4.file.path <- "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/L4/Seurat Object/L4_seurat.rds"
+saveRDS(L4, file = L4.file.path)
+
+### Perform QC on each object individually
+
+# L1
+L1[["percent.mt"]] <- PercentageFeatureSet(L1, pattern = "^MT-")
+VlnPlot(L1, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+L1 <- SCTransform(L1, vars.to.regress = "percent.mt", verbose = F)
+L1 <- NormalizeData(L1)
+L1 <- FindVariableFeatures(L1)
+L1 <- ScaleData(L1)
+L1 <- RunPCA(L1)
+L1 <- RunUMAP(L1, dims = 1:10)
+DimPlot(L1, reduction = "umap")
+L1 <- subset(L1,
+             nFeature_RNA > 200 &
+               nFeature_RNA < 7500 &
+               nCount_RNA > 800 &
+               percent.mt < 25)
+DimPlot(L1, reduction = 'umap')
+
+#L2
+L2[["percent.mt"]] <- PercentageFeatureSet(L2, pattern = "^MT-")
+VlnPlot(L2, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+L2 <- SCTransform(L2)
+L2 <- NormalizeData(L2)
+L2 <- FindVariableFeatures(L2)
+L2 <- ScaleData(L2)
+L2 <- RunPCA(L2)
+L2 <- RunUMAP(L2, dims = 1:10)
+DimPlot(L2, reduction = "umap")
+L2 <- subset(L2,
+             nFeature_RNA > 200 &
+               nFeature_RNA < 7500 &
+               nCount_RNA > 800 &
+               percent.mt < 25)
+DimPlot(L2, reduction = 'umap')
+
+#L3
+L3[["percent.mt"]] <- PercentageFeatureSet(L3, pattern = "^MT-")
+VlnPlot(L3, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+L3 <- SCTransform(L3)
+L3 <- NormalizeData(L3)
+L3 <- FindVariableFeatures(L3)
+L3 <- ScaleData(L3)
+L3 <- RunPCA(L3)
+L3 <- RunUMAP(L3, dims = 1:10)
+DimPlot(L3, reduction = "umap")
+L3 <- subset(L3,
+             nFeature_RNA > 200 &
+               nFeature_RNA < 7500 &
+               nCount_RNA > 800 &
+               percent.mt < 25)
+DimPlot(L3, reduction = 'umap')
+
+#L4
+L4[["percent.mt"]] <- PercentageFeatureSet(L4, pattern = "^MT-")
+VlnPlot(L4, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
+
+L4 <- SCTransform(L4)
+L4 <- NormalizeData(L4)
+L4 <- FindVariableFeatures(L4)
+L4 <- ScaleData(L4)
+L4 <- RunPCA(L4)
+L4 <- RunUMAP(L4, dims = 1:10)
+DimPlot(L4, reduction = "umap")
+L4 <- subset(L4,
+              nFeature_RNA > 200 &
+              nFeature_RNA < 7500 &
+              nCount_RNA > 800 &
+              percent.mt < 25)
+DimPlot(L4, reduction = 'umap')
+
+### Merge all QC'ed data sets into one Seurat Object
+merged_datasets <- merge(L1, y = list(L2, L3, L4), 
+                         add.cell.ids = c("3 cell type", "3 cell type", "4 cell type", "4 cell type"))
+#Create a sample column
+merged_datasets$sample <- rownames(merged_datasets@meta.data)
+#Split sample column
+merged_datasets@meta.data <- separate(merged_datasets@meta.data, col = "sample", 
+                                      into = c("Organoid Type", "Barcode", "batch"), sep = "_")
+
+## QC one more time
+View(merged_datasets@meta.data)
+
+# Filter dataset
+merged_datasets <- subset(merged_datasets, 
+                            nFeature_RNA > 200 &
+                            nFeature_RNA < 7500 &
+                            nCount_RNA > 800 &
+                            percent.mt < 25)
+
+merged_datasets <- NormalizeData(merged_datasets)
+merged_datasets <- FindVariableFeatures(merged_datasets)
+merged_datasets <- ScaleData(merged_datasets)
+# SCTransform is an improvement over normalization/find variable features/scale data- sequencing depth matters- need more computing power for this?
+merged_datasets <- SCTransform(merged_datasets, vars.to.regress = "percent.mt", verbose = F)
+
+# Save Merged Seurat file as .rds file: for ease of access in the future
+Merged.file.path <- "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/Integrated Datasets/Seurat Object/harmony_seurat.rds"
+saveRDS(merged_datasets, file = Merged.file.path)
+
+### Integration of datasets (see the Seurat Vignette)
+
+#PCA has to be run before IntegrateLayers: this creates a pca reduction
+merged_datasets <- RunPCA(merged_datasets)
+integrated_data <- IntegrateLayers(object = merged_datasets, method = CCAIntegration, orig.reduction = "pca",
+                                   new.reduction = "integrated.cca", verbose = F)
+
+# PCA must be run before Harmony
+integrated_data <- RunPCA(integrated_data)
+# Run Harmony- harmony runs and generates an output, but the warning message "invalid name supplied... 
+integrated_data <- RunHarmony(integrated_data,
+                              group.by.vars = "batch",
+                              reduction.save = "harmony_pca",
+                              max_iter = 25)
+
+# Continue scRNAseq Pipeline
+integrated_data <- RunUMAP(integrated_data, reduction = "harmony_pca", dims = 1:20)
+integrated_data <- FindNeighbors(integrated_data, reduction = "harmony_pca")
+integrated_data <- FindClusters(integrated_data, resolution = 0.5)
+
+# Visualize by Library (batch) as well as Organoid type- UMAP is best
+DimPlot(integrated_data, reduction = "umap", label = T)
+DimPlot(integrated_data, reduction = "umap", group.by = "batch")
+DimPlot(integrated_data, reduction = "umap", group.by = "Organoid Type")
+
+
+# Visualizing features (genes) of interest to us
+combo.plot <- FeaturePlot(merged_datasets, features = c("TNNI1", "MYL2", "NPPA",
+                                           "MYH6", "PDGFRB", 'CSPG4', "COL6A1", "COL1A1",
+                                           "PECAM1", "EMC10", "CD8A", "CD2"), combine = F)
+combo.plot <- lapply(X = combo.plot, FUN = function(marker.plot) marker.plot + 
+                       theme(plot.title = element_text(size = 8)) +
+                       theme(axis.title.x = element_text(size = 5)) +
+                       theme(axis.title.y = element_text(size = 5)) +
+                       theme(axis.text.x = element_text(size = 5)) +
+                       theme(axis.text.y = element_text(size = 5)) +
+                       theme(legend.position = "none"))
+
+CombinePlots(plots = combo.plot)
+
+# Cut out the L4 junk by identifying clusters of interest
+excluded_cells <- WhichCells(integrated_data, idents = c("2", "0", "3", "14", "13"), invert = TRUE)
+antijunk <- subset(integrated_data, cells = excluded_cells)
+# Re-run the pipeline
+antijunk <- NormalizeData(antijunk)
+antijunk <- FindVariableFeatures(antijunk)
+antijunk <- ScaleData(antijunk)
+antijunk <- RunUMAP(antijunk, reduction = "harmony_pca", dims = 1:20)
+antijunk <- FindNeighbors(antijunk, reduction = "harmony_pca")
+antijunk <- FindClusters(antijunk, resolution = 0.5)
+DimPlot(antijunk, reduction = "umap", label = T, group.by = "celltype")
+
+DimPlot(antijunk, reduction = "umap", group.by = "batch")
+DimPlot(antijunk, reduction = "umap", group.by = "Organoid Type")
+
+combo.plot <- FeaturePlot(antijunk, features = c("TNNI1", "MYL2", "NPPA",
+                                                        "MYH7", "PDGFRB", 'CSPG4', "HCN4", "COL1A1",
+                                                        "PECAM1", "EMC10", "TBX3", "ISL1"), combine = F)
+combo.plot <- lapply(X = combo.plot, FUN = function(marker.plot) marker.plot + 
+                       theme(plot.title = element_text(size = 8)) +
+                       theme(axis.title.x = element_text(size = 5)) +
+                       theme(axis.title.y = element_text(size = 5)) +
+                       theme(axis.text.x = element_text(size = 5)) +
+                       theme(axis.text.y = element_text(size = 5)) +
+                       theme(legend.position = "none"))
+
+CombinePlots(plots = combo.plot)
+
+conditions <- DimPlot(antijunk, reduction = "umap", group.by = "Organoid Type")
+clusters <- DimPlot(antijunk, reduction = "umap", group.by = "seurat_clusters", label = T)
+clusters + conditions
+# Join layers has to be run in order to analyze our seurat object as one
+antijunk <- JoinLayers(antijunk)
+
+#Finding Markers using a Seurat function- this is made faster by the presto package
+Integrated_markers <- FindAllMarkers(object = antijunk)
+# Distinguishing conditions btwn "treated" vs "untreated" 
+conserved_markers <- FindConservedMarkers(object = merged_datasets)
+
+##------ Visualizing some key results from finding markers (DE analysis)
+ggplot(Integrated_markers, aes(x = avg_log2FC, y = -log10(p_val_adj))) +
+  geom_point(aes(color = cluster)) +
+  theme_minimal() +
+  labs(title = "Volcano Plot", x = "Log2 Fold Change", y = "-Log10 Adjusted P-value")
+
+interest_genes <- head(Integrated_markers$gene, 15)  # Example: top 15 genes
+DotPlot(antijunk, features = interest_genes) + RotatedAxis()
+
+significant_markers <- Integrated_markers %>%
+  filter(p_val_adj < 0.05 & abs(avg_log2FC) > 0.25)
+
+# Identify top markers for each cluster
+top_markers <- significant_markers %>%
+  group_by(cluster) %>%
+  top_n(n = 10, wt = avg_log2FC) %>%  # Example: top 10 genes per cluster
+  pull(gene)
+
+# Plot heatmap
+DoHeatmap(antijunk, features = unique(top_markers))
+metadata <- antijunk@meta.data
+metadataFile <- "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/Integrated Datasets/No L4 Contamination/metadata.csv"
+write.csv(significant_markers, file = metadataFile, row.names = T)
+
+# Making a .cloupe file to feed into the Loupe Browser
+create_loupe_from_seurat(merged_datasets,
+                         output_dir = "C:/Users/nateh/OneDrive/Documents/Mei Lab/RNAseq/scRNAseq/Integrated Datasets/Harmony")
 
