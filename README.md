@@ -11,8 +11,10 @@ Workflow of taking 10X Genomics output files: {.features, .barcode, and .matrix}
      4-cell type: 70% iCMs, 15% iECs, 10% iECFs, 5% iPCs
 4. Cardiac organoids were allowed to self-aggregate for 5 days of culture.
 5. Organoids were dissociated into single cells via TripLE for 40 minutes and assessed for viability and stress markers via flow cytometry.
-6. Upon quality-control assessment, 3-cell type and 4-cell type organoids (n = 70 for each group) were processed via the 10X Genomics GEM single cell kit in duplicate (n = 2 libraries for each condition for a total of 4-libraries)
+6. Upon quality-control assessment, 3-cell type and 4-cell type organoids (n = 70 for each group) were processed via the 10X Genomics GEM single cell kit in duplicate (n = 2 libraries for each condition for a total of 4 libraries)-
 
+![Pericytes](https://github.com/user-attachments/assets/06b958a3-7b3e-4da5-b683-fcd89ca43366)
+   
 # Packages Required
 
 Analysis conducted within R (v4.4.1) were done within the RStudio workspace. 
